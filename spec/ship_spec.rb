@@ -14,19 +14,19 @@ RSpec.describe Ship do
     end
 
     it 'has a length' do
-      expect(@length).to eq(3)
+      expect(@cruiser.length).to eq(3)
     end
 
-    xit 'has health' do
+    it 'has health' do
       expect(@cruiser.health).to eq(3)
     end
 
-    xit 'isnt sunk' do
+    it 'isnt sunk' do
       expect(@cruiser.sunk?).to eq(false)
     end
 
-    xit 'takes a hit' do
-      @ship.hit
+    it 'takes a hit' do
+      @cruiser.hit
 
       expect(@cruiser.health).to eq(2)
 
