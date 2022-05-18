@@ -4,6 +4,7 @@ attr_reader :coordinate,
   def initialize(coordinate)
     @coordinate = coordinate
     @ship = nil
+    @fired_upon = false
   end
 
   def empty?
@@ -14,7 +15,19 @@ attr_reader :coordinate,
     end
   end
 
-  def place_ship(cruiser)
-    @ship = cruiser
+
+  def place_ship(boat)
+    @ship = boat
+  end
+
+  def fired_upon?
+    @fired_upon
+  end
+
+  def fire_upon
+    if @ship != nil
+      @ship.hit
+      @fired_upon = true
+    end
   end
 end
