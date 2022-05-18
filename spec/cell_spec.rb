@@ -23,13 +23,15 @@ RSpec.describe Cell do
   end
 
   it '#place_ship' do
+
+  it 'place ship' do
+
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
 
     expect(@cell.ship).to eq(cruiser)
     expect(@cell.empty?).to eq(false)
   end
-
   it '#fired_upon?' do
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
@@ -45,4 +47,5 @@ RSpec.describe Cell do
     expect(@cell.ship.health).to eq(2)
     expect(@cell.fired_upon?).to eq(true)
   end
+
 end
