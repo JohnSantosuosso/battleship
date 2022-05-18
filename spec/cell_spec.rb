@@ -22,8 +22,6 @@ RSpec.describe Cell do
     expect(@cell.empty?).to eq(true)
   end
 
-  it '#place_ship' do
-
   it 'place ship' do
 
     cruiser = Ship.new("Cruiser", 3)
