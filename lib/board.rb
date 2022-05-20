@@ -2,14 +2,14 @@ require_relative 'cell'
 require_relative 'ship'
 
 class Board
-  attr_accessor :cells, :coordinates, :column_check, :row_check, :coordinates_sort_by_column
+  attr_accessor :cells, :coordinates, :column_check_2, :column_check_3, :row_check, :computer_cruiser_position
 
   def initialize
     @coordinates = []
     @cells = create_cells
-    @column_check = []
     @row_check = []
-    @coordinates_sort_by_column = coordinates_sort_by_column
+    @column_check_2 = build_column_check_2
+    @column_check_3 = build_column_check_3
   end
 
   def create_cells
@@ -37,15 +37,27 @@ class Board
     ship_object.length == coordinate_array.length ? true : false
   end
 
+#This is the hardcoded way to this--bad practice but in the interests of time
+  def build_column_check_2
+    @column_check_2 = [['A1','B1'],['B1', 'C1'],['C1','D1'], ['A2','B2'],['B2', 'C2'],['C2','D2'],['A3','B3'],['B3', 'C3'],['C3','D3'],['A4','B4'],['B4', 'C4'],['C4','D4']]
+  end
+
+  def build_column_check_3
+    @column_check_3 = [['A1','B1', 'C1'],['A2','B2', 'C2'],['A3','B3', 'C3'],['A4','B4', 'C4'],['B1','C1','D1'],['B2','C2','D2'],['B3','C3','D3'], ['B4','C4','D4']]
+  end
+
+#need to remove elements from row check for both row check (2) and row_check (3)
   def consecutive_row_check(ship_object,coordinate_array)
     @coordinates.each_cons(coordinate_array.length) {|x| @row_check << x}
     @row_check.any? {|rows| rows == coordinate_array}
   end
 
   def consecutive_column_check(ship_object,coordinate_array)
-    @coordinates_sort_by_column = @coordinates.sort_by{|coordinate| coordinate[1]}
-    @coordinates_sort_by_column.each_cons(coordinate_array.length) {|x| @column_check << x}
-    @column_check.any? {|columns| columns == coordinate_array}
+    if coordinate_array.length == 2
+      @column_check_2.any? {|columns| columns == coordinate_array}
+    else
+      @column_check_3.any? {|columns| columns == coordinate_array}
+    end
   end
 
   def check_for_overlapping_ships(coordinate_array)
