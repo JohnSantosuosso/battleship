@@ -27,7 +27,6 @@ RSpec.describe Ship do
 
     it 'takes a hit' do
       @cruiser.hit
-
       expect(@cruiser.health).to eq(2)
     end
 
