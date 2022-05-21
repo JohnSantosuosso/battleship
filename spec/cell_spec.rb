@@ -23,13 +23,13 @@ RSpec.describe Cell do
   end
 
   it 'place ship' do
-
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
 
     expect(@cell.ship).to eq(cruiser)
     expect(@cell.empty?).to eq(false)
   end
+
   it '#fired_upon?' do
     cruiser = Ship.new("Cruiser", 3)
     @cell.place_ship(cruiser)
