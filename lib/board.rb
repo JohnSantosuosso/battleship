@@ -46,6 +46,7 @@ class Board
     @column_check_3 = [['A1','B1', 'C1'],['A2','B2', 'C2'],['A3','B3', 'C3'],['A4','B4', 'C4'],['B1','C1','D1'],['B2','C2','D2'],['B3','C3','D3'], ['B4','C4','D4']]
   end
 
+
 #need to remove elements from row check for both row check (2) and row_check (3)
   def consecutive_row_check(ship_object,coordinate_array)
     @coordinates.each_cons(coordinate_array.length) {|x| @row_check << x}
