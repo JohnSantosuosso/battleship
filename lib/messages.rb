@@ -19,8 +19,28 @@ class Messages
     puts "Computer has placed its ships."
   end
 
-  def user_place_ships
-    puts "Please place your ships"
+  def user_place_sub
+    puts "Please place your submarine,length = 2"
+  end
+
+  def user_place_sub_success
+    puts "You have successfully placed your submarine!"
+  end
+
+  def user_place_cruiser
+    puts "Please place your cruiser, length = 3"
+  end
+
+  def user_place_cruiser_success
+    puts "You have successfully placed your cruiser!"
+  end
+
+  def user_place_sub_failure
+    puts "Uh oh, it looks like there were one or more errors with your sub placement.  Please try again"
+  end
+
+  def user_place_cruiser_failure
+    puts "Uh oh, it looks like there were one or more errors with your cruiser placement.  Please try again"
   end
 
   def submarine_placement
