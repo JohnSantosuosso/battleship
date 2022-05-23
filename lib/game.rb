@@ -45,11 +45,31 @@ class Game
 
 #Setup computer ships--must revise to add random elements
   def generate_computer_sub_position
-      @computer_sub_position = ['A1','A2'] #dummy position account for overlaps later
+      @computer_sub_position = @computer_board.build_row_check_2.sample(1).flatten
   end
 
   def generate_computer_cruiser_position
-    @computer_cruiser_position = ['B1','B2','B3'] #dummy position account for overlaps later
+    @computer_cruiser_position = @computer_board.build_row_check_3.sample(1).flatten
+  end
+
+  def validate_computer_sub_placement
+    if @computer_board.valid_placement?(@computer_sub, @computer_sub_position) == true
+      generate_computer_cruiser_position
+    else
+      @computer_sub_position =[]
+      @computer_board.row_check = []
+      generate_computer_sub_position
+    end
+  end
+
+  def validate_computer_cruiser_placement
+    if @computer_board.valid_placement?(@computer_cruiser, @computer_cruiser_position) == true
+      puts 'The computer places its ships..'
+    else
+      @computer_sub_position =[]
+      @computer_board.row_check = []
+      generate_computer_cruiser_position
+    end
   end
 
   def place_computer_sub
@@ -60,29 +80,13 @@ class Game
     @computer_board.place(@computer_cruiser,@computer_cruiser_position)
   end
 
-  def computer_sub_placement_error?
-    if place_computer_sub == nil
-      generate_computer_sub_position
-    else
-      place_computer_cruiser
-    end
-  end
-
-  def computer_cruiser_placement_error?
-    if place_computer_cruiser == nil
-      generate_computer_cruiser_position
-    else
-      receive_player_sub_position
-    end
-  end
-
   def place_all_computer_ships
     generate_computer_sub_position
+    validate_computer_sub_placement
     generate_computer_cruiser_position
+    validate_computer_cruiser_placement
     place_computer_sub
     place_computer_cruiser
-    computer_sub_placement_error?
-    computer_cruiser_placement_error?
     messages.computer_place_ships
     messages.display_computer_header
     display_computer_board_visible
@@ -289,12 +293,12 @@ end
 def looping_gameplay
   player_fire_input
   check_computers_health
-  messages.display_player_header
+  messages.display_computer_header
   display_computer_board_visible
   check_game_result
   computer_fire_input
   check_players_health
-  messages.display_computer_header
+  messages.display_player_header
   display_player_board_hidden
   check_game_result
 end

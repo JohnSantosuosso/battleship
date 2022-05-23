@@ -2,7 +2,7 @@ require_relative 'cell'
 require_relative 'ship'
 
 class Board
-  attr_accessor :cells, :coordinates, :column_check_2, :column_check_3, :row_check, :computer_cruiser_position
+  attr_accessor :cells, :coordinates, :column_check_2, :column_check_3, :row_check, :computer_cruiser_position, :row_check_2, :row_check_3
 
   def initialize
     @coordinates = []
@@ -44,6 +44,22 @@ class Board
 
   def build_column_check_3
     @column_check_3 = [['A1','B1', 'C1'],['A2','B2', 'C2'],['A3','B3', 'C3'],['A4','B4', 'C4'],['B1','C1','D1'],['B2','C2','D2'],['B3','C3','D3'], ['B4','C4','D4']]
+  end
+
+  def build_row_check_2
+    @row_check_2 = [['A1','A2'],['A2', 'A3'],['A3','A4'], ['B1','B2'],['B2', 'B3'],['B3','B4'],['C1','C2'],['C2', 'C3'],['C3','C4'],['D1','D2'],['D2', 'D3'],['D3','D4']]
+  end
+
+  def build_row_check_3
+    @row_check_3 = [['A1','A2', 'A3'],['A2','A3', 'A4'],['B1','B2', 'B3'],['B2','B3', 'B4'],['C1','C2','C3'],['C2','C3','C4'],['D1','D2','D3'], ['D2','D3','D4']]
+  end
+
+  def random_row_sub_computer
+    #use to create array to pull either row or column from
+  end
+
+  def random_row_cruiser_computer
+    #use to create array to pull either row or column from
   end
 
 
