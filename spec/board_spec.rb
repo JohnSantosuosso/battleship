@@ -81,23 +81,6 @@ RSpec.describe Board do
       end
     end
 
-    describe '#valid_placement?' do
-      it 'recognizes a valid placement by ship size' do
-        cruiser = Ship.new("Cruiser", 3)
-        submarine = Ship.new("Submarine", 2)
-        expect(@board.valid_placement?(cruiser, ["A1", "A2"])).to eql(false)
-        expect(@board.valid_placement?(submarine, ["A1", "A2"])).to eql(true)
-      end
-
-      it 'recognizes a valid placement by consecutive coordinates' do
-        cruiser = Ship.new("Cruiser", 3)
-        submarine = Ship.new("Submarine", 2)
-        expect(@board.valid_placement?(cruiser, ["A1", "A2", "A4"])).to eql(false)
-        expect(@board.valid_placement?(cruiser, ["B1", "C1", "D1"])).to eql(true)
-        expect(@board.valid_placement?(submarine, ["B1", "B2"])).to eql(true)
-      end
-    end
-
     describe '#place ships' do
       it 'recognizes a valid placement by cells' do
         cruiser = Ship.new("Cruiser", 3)
