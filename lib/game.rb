@@ -53,17 +53,18 @@ class Game
   end
 
   def validate_computer_sub_placement
-    if @computer_board.valid_placement?(@computer_sub, @computer_sub_position) == true
-      generate_computer_cruiser_position
+    if @computer_board.valid_placement?(@computer_sub, @computer_sub_position) #== true
+      #generate_computer_cruiser_position  ---
+      @computer_sub_position
     else
-      @computer_sub_position =[]
+      #@computer_sub_position =[]
       @computer_board.row_check = []
       generate_computer_sub_position
     end
   end
 
   def validate_computer_cruiser_placement
-    if @computer_board.valid_placement?(@computer_cruiser, @computer_cruiser_position) == true
+    if @computer_board.valid_placement?(@computer_cruiser, @computer_cruiser_position) #== true
       puts 'The computer places its ships..'
     else
       @computer_sub_position =[]
