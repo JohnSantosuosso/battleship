@@ -2,14 +2,18 @@ require_relative 'cell'
 require_relative 'ship'
 
 class Board
-  attr_accessor :cells, :coordinates, :column_check_2, :column_check_3, :row_check, :computer_cruiser_position, :row_check_2, :row_check_3
+  attr_accessor :cells, :coordinates, :column_check_2, :column_check_3, :row_check, :row_check_2, :row_check_3, :random_sub_coordinates, :random_cruiser_coordinates
 
   def initialize
     @coordinates = []
     @cells = create_cells
     @row_check = []
-    @column_check_2 = build_column_check_2
-    @column_check_3 = build_column_check_3
+    @column_check_2 = [['A1','B1'],['B1', 'C1'],['C1','D1'], ['A2','B2'],['B2', 'C2'],['C2','D2'],['A3','B3'],['B3', 'C3'],['C3','D3'],['A4','B4'],['B4', 'C4'],['C4','D4']]
+    @column_check_3 = [['A1','B1', 'C1'],['A2','B2', 'C2'],['A3','B3', 'C3'],['A4','B4', 'C4'],['B1','C1','D1'],['B2','C2','D2'],['B3','C3','D3'], ['B4','C4','D4']]
+    @row_check_2 = [['A1','A2'],['A2', 'A3'],['A3','A4'], ['B1','B2'],['B2', 'B3'],['B3','B4'],['C1','C2'],['C2', 'C3'],['C3','C4'],['D1','D2'],['D2', 'D3'],['D3','D4']]
+    @row_check_3 = [['A1','A2', 'A3'],['A2','A3', 'A4'],['B1','B2', 'B3'],['B2','B3', 'B4'],['C1','C2','C3'],['C2','C3','C4'],['D1','D2','D3'], ['D2','D3','D4']]
+    @random_sub_coordinates = random_sub_coordinates
+    @random_cruiser_coordinates = random_cruiser_coordinates
   end
 
   def create_cells
@@ -37,36 +41,12 @@ class Board
     ship_object.length == coordinate_array.length ? true : false
   end
 
-#This is the hardcoded way to this--bad practice but in the interests of time
-  def build_column_check_2
-    @column_check_2 = [['A1','B1'],['B1', 'C1'],['C1','D1'], ['A2','B2'],['B2', 'C2'],['C2','D2'],['A3','B3'],['B3', 'C3'],['C3','D3'],['A4','B4'],['B4', 'C4'],['C4','D4']]
-  end
-
-  def build_column_check_3
-    @column_check_3 = [['A1','B1', 'C1'],['A2','B2', 'C2'],['A3','B3', 'C3'],['A4','B4', 'C4'],['B1','C1','D1'],['B2','C2','D2'],['B3','C3','D3'], ['B4','C4','D4']]
-  end
-
-  def build_row_check_2
-    @row_check_2 = [['A1','A2'],['A2', 'A3'],['A3','A4'], ['B1','B2'],['B2', 'B3'],['B3','B4'],['C1','C2'],['C2', 'C3'],['C3','C4'],['D1','D2'],['D2', 'D3'],['D3','D4']]
-  end
-
-  def build_row_check_3
-    @row_check_3 = [['A1','A2', 'A3'],['A2','A3', 'A4'],['B1','B2', 'B3'],['B2','B3', 'B4'],['C1','C2','C3'],['C2','C3','C4'],['D1','D2','D3'], ['D2','D3','D4']]
-  end
-
-  def random_row_sub_computer
-    #use to create array to pull either row or column from
-  end
-
-  def random_row_cruiser_computer
-    #use to create array to pull either row or column from
-  end
-
-
-#need to remove elements from row check for both row check (2) and row_check (3)
   def consecutive_row_check(ship_object,coordinate_array)
-    @coordinates.each_cons(coordinate_array.length) {|x| @row_check << x}
-    @row_check.any? {|rows| rows == coordinate_array}
+    if coordinate_array.length == 2
+      @row_check_2.any? {|columns| columns == coordinate_array}
+    else
+      @row_check_3.any? {|columns| columns == coordinate_array}
+    end
   end
 
   def consecutive_column_check(ship_object,coordinate_array)
@@ -89,6 +69,15 @@ class Board
     end
   end
 
+  #Hardcoded arrays to build random coordinates for ships
+    def random_coordinates_sub_computer
+      @random_sub_coordinates = [@column_check_2, @row_check_2].sample(1).flatten!(1)
+    end
+
+    def random_coordinates_cruiser_computer
+      @random_cruiser_coordinates = [@row_check_3, @row_check_3].sample(1).flatten!(1)
+    end
+
   def render(show_ship_board = false)
     if show_ship_board == true
       header_row = '  '+["1", "2", "3", "4"].join(' ') + "\n"
@@ -109,7 +98,3 @@ class Board
     end
 
 end
-
-
-
-#require 'pry'; binding.pry
