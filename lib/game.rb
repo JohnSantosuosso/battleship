@@ -75,6 +75,7 @@ class Game
 
   def place_computer_sub
     @computer_board.place(@computer_sub,@computer_sub_position)
+    require "pry"; binding.pry 
   end
 
   def place_computer_cruiser

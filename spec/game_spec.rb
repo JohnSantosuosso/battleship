@@ -55,4 +55,10 @@ RSpec.describe Game do
     end
   end
 
+  describe '#place_computer_sub' do
+    it 'computer sub was placed' do
+      expect().to eq()
+    end
+  end
+
 end
