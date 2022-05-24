@@ -4,8 +4,8 @@ require_relative 'ship'
 require_relative 'messages'
 
 class Game
-  attr_accessor :player_board, :computer_board, :computer_sub, :computer_cruiser, :player_sub, :player_cruiser, :player_sub_position, :player_cruiser_position, :computer_sub_position, :computer_cruiser_position, :messages, :player_fire, :computer_fire, :player_wins, :computer_wins, :game_over
-
+  attr_accessor :player_sub_position, :player_cruiser_position, :computer_sub_position, :computer_cruiser_position, :messages, :player_fire, :computer_fire,:game_over
+  attr_reader :player_board, :computer_board, :computer_sub, :computer_cruiser, :player_sub, :player_cruiser
   def initialize
     @player_board = Board.new
     @computer_board = Board.new
@@ -20,51 +20,47 @@ class Game
     @messages = Messages.new
     @player_fire = player_fire
     @computer_fire = @computer_fire
-    @player_wins = false
-    @computer_wins = false
     @game_over = false
   end
 
-
-#Methods to render game boards
+#Methods for rendering boards--------------------
   def display_computer_board_visible
-    puts @computer_board.render
+    @computer_board.render
   end
 
   def display_computer_board_hidden
-    puts @computer_board.render(true)
+    @computer_board.render(true)
   end
 
   def display_player_board_visible
-    puts @player_board.render
+     @player_board.render
   end
 
   def display_player_board_hidden
-    puts @player_board.render(true)
+    @player_board.render(true)
   end
 
-#Setup computer ships--must revise to add random elements
+#Setup computer ships
   def generate_computer_sub_position
-      @computer_sub_position = @computer_board.build_row_check_2.sample(1).flatten
+      @computer_sub_position = @computer_board.random_coordinates_sub_computer.sample(1).flatten
   end
 
   def generate_computer_cruiser_position
-    @computer_cruiser_position = @computer_board.build_row_check_3.sample(1).flatten
+    @computer_cruiser_position = @computer_board.random_coordinates_cruiser_computer.sample(1).flatten
   end
 
   def validate_computer_sub_placement
-    if @computer_board.valid_placement?(@computer_sub, @computer_sub_position) #== true
-      #generate_computer_cruiser_position  ---
-      @computer_sub_position
+    if @computer_board.valid_placement?(@computer_sub, @computer_sub_position) == true
+      generate_computer_cruiser_position
     else
-      #@computer_sub_position =[]
+      @computer_sub_position =[]
       @computer_board.row_check = []
       generate_computer_sub_position
     end
   end
 
   def validate_computer_cruiser_placement
-    if @computer_board.valid_placement?(@computer_cruiser, @computer_cruiser_position) #== true
+    if @computer_board.valid_placement?(@computer_cruiser, @computer_cruiser_position) == true
       puts 'The computer places its ships..'
     else
       @computer_sub_position =[]
@@ -89,10 +85,9 @@ class Game
     place_computer_sub
     place_computer_cruiser
     messages.computer_place_ships
-    messages.display_computer_header
-    display_computer_board_visible
+    puts messages.display_computer_header
+    puts display_computer_board_visible
   end
-
 
 #Setup player_sub ----------------------------------------------------------
   def receive_player_sub_position_1
@@ -124,8 +119,8 @@ class Game
     if @player_board.valid_placement?(@player_sub, @player_sub_position) == true
       place_player_sub
       messages.user_place_sub_success
-      messages.display_player_header
-      display_player_board_hidden
+      puts messages.display_player_header
+      puts display_player_board_hidden
       receive_player_cruiser_position_1
     else
       messages.user_place_sub_failure
@@ -187,8 +182,8 @@ def validate_cruiser_placement
   if @player_board.valid_placement?(@player_cruiser, @player_cruiser_position) == true
     place_player_cruiser
     messages.user_place_cruiser_success
-    messages.display_player_header
-    display_player_board_hidden
+    puts messages.display_player_header
+    puts display_player_board_hidden
   else
     messages.user_place_cruiser_failure
     @player_cruiser_position = []
@@ -266,56 +261,48 @@ end
 
 #Score Check Methods--------------------------------------------------
 def check_players_health
-  @player_sub.health + @player_cruiser.health == 0 ? true : 'Your turn!'
+  @player_sub.health == 0 && @player_cruiser.health == 0 ? true : 'Your turn!'
 end
 
 def check_computers_health
-  @computer_sub.health + @computer_cruiser.health == 0 ? true : 'The computer takes a turn..'
+  @computer_sub.health == 0 && @computer_cruiser.health == 0 ? true : 'The computer takes a turn..'
 end
 
 def check_game_result
   if check_players_health == true
-    @computer_wins = true
     @game_over = true
-     messages.computer_wins
+     puts messages.computer_wins
+     return
   elsif check_computers_health == true
-    @player_wins = true
     @game_over = true
-     messages.player_wins
+     puts messages.player_wins
   end
 end
 
-#Cumulative Game Methods-----------------------------------
-def initial_setup
-  place_all_computer_ships
-  place_all_player_ships
-end
-
-def looping_gameplay
-  player_fire_input
-  check_computers_health
-  messages.display_computer_header
-  display_computer_board_visible
-  check_game_result
-  computer_fire_input
-  check_players_health
-  messages.display_player_header
-  display_player_board_hidden
-  check_game_result
-end
-
-def reset_board
-  initialize
-end
-
-#Main Menu Options----------------------------------------------
+#Main Menu/Start Game----------------------------------------------
 def start_game
   messages.welcome
   user_input = gets.upcase.strip
     if user_input == "P"
-      initial_setup
-      until @game_over == true do looping_gameplay end
-      reset_board
+      place_all_computer_ships
+      place_all_player_ships
+      while true
+        player_fire_input
+        check_computers_health
+        puts "\n"
+        puts messages.display_computer_header
+        puts display_computer_board_visible
+        check_game_result
+      break if @game_over == true
+        computer_fire_input
+        check_players_health
+        puts "\n"
+        puts messages.display_player_header
+        puts display_player_board_hidden
+        check_game_result
+      break if @game_over == true
+      end
+      initialize
       start_game
     elsif user_input =="Q"
       messages.player_quits
@@ -325,8 +312,3 @@ def start_game
     end
   end
 end
-
-game = Game.new
-game.start_game
-
-#require 'pry'; binding.pry

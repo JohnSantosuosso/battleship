@@ -58,11 +58,11 @@ class Messages
   end
 
   def display_computer_header
-    puts "-------- Computer Board --------"
+    "-------- Computer Board --------"
   end
 
   def display_player_header
-    puts "--------- Player Board ---------"
+    "--------- Player Board ---------"
   end
 
   def player_shot
@@ -76,13 +76,11 @@ class Messages
   end
 
   def player_wins
-    puts "You win."
-    puts "It appears that intelligence doesn't"
-    puts "always win. :("
+    "You win. It appears that intelligence doesn't always win. :("
   end
 
   def computer_wins
-    puts "I have emerged victorious... as always."
+     "I have emerged victorious... as always."
   end
 
 end

@@ -17,10 +17,6 @@ RSpec.describe Board do
       expect(@board.cells.length).to eql(16)
     end
 
-    it 'has no column checks by default' do
-      expect(@column_check).to eql(nil)
-    end
-
     it 'has no row checks by default' do
       expect(@row_check).to eql(nil)
     end
@@ -31,6 +27,22 @@ RSpec.describe Board do
 
     it 'has no coordinates sorted by column by default' do
       expect(@coordinates_sort_by_column).to eql(nil)
+    end
+
+    it 'builds an array to hold coordinates for column checks with a length of 2' do
+      expect(@board.column_check_2).to eql([['A1','B1'],['B1', 'C1'],['C1','D1'], ['A2','B2'],['B2', 'C2'],['C2','D2'],['A3','B3'],['B3', 'C3'],['C3','D3'],['A4','B4'],['B4', 'C4'],['C4','D4']])
+    end
+
+    it 'builds an array to hold coordinates for column checks with a length of 3' do
+      expect(@board.column_check_3).to eql([['A1','B1', 'C1'],['A2','B2', 'C2'],['A3','B3', 'C3'],['A4','B4', 'C4'],['B1','C1','D1'],['B2','C2','D2'],['B3','C3','D3'], ['B4','C4','D4']])
+    end
+
+    it 'builds an array to hold coordinates for row checks with a length of 2' do
+      expect(@board.row_check_2).to eql([['A1','A2'],['A2', 'A3'],['A3','A4'], ['B1','B2'],['B2', 'B3'],['B3','B4'],['C1','C2'],['C2', 'C3'],['C3','C4'],['D1','D2'],['D2', 'D3'],['D3','D4']])
+    end
+
+    it 'builds an array to hold coordinates for row checks with a length of 3' do
+      expect(@board.row_check_3).to eql([['A1','A2', 'A3'],['A2','A3', 'A4'],['B1','B2', 'B3'],['B2','B3', 'B4'],['C1','C2','C3'],['C2','C3','C4'],['D1','D2','D3'], ['D2','D3','D4']])
     end
 
   end
@@ -44,6 +56,7 @@ RSpec.describe Board do
     describe '#create_cells' do
       it 'creates hash of new cells mapped to A1 to D4' do
         expect(@board.cells.length).to eql(16)
+        expect(@board.cells).to be_an_instance_of(Hash)
       end
     end
 
@@ -106,6 +119,44 @@ RSpec.describe Board do
         @board.place(cruiser, ["A1", "A2", "A3"])
         expect(@board.valid_placement?(submarine, ["A1", "A2"])).to eql(false)
       end
+
+      it 'checks valid coordinates by length' do
+        cruiser = Ship.new("Cruiser", 3)
+        sub = Ship.new("Sub", 2)
+        expect(@board.coordinate_length_check?(cruiser,['A1','A2','A3'])).to eql(true)
+        expect(@board.coordinate_length_check?(sub,['B1','B2','B3'])).to eql(false)
+      end
+
+      it 'checks valid coordinates by column' do
+        cruiser = Ship.new("Cruiser", 3)
+        sub = Ship.new("Sub", 2)
+        expect(@board.consecutive_column_check(cruiser,['A1','B1','C1'])).to eql(true)
+        expect(@board.consecutive_column_check(sub,['A1','A2'])).to eql(false)
+      end
+
+      it 'checks valid coordinates by column' do
+        cruiser = Ship.new("Cruiser", 3)
+        sub = Ship.new("Sub", 2)
+        expect(@board.consecutive_column_check(cruiser,['A1','B1','C1'])).to eql(true)
+        expect(@board.consecutive_column_check(sub,['A1','A2'])).to eql(false)
+      end
+
+      it 'checks valid coordinates by row' do
+        cruiser = Ship.new("Cruiser", 3)
+        sub = Ship.new("Sub", 2)
+        expect(@board.consecutive_row_check(cruiser,['A1','A2','A3'])).to eql(true)
+        expect(@board.consecutive_row_check(sub,['A1','A3'])).to eql(false)
+        expect(@board.consecutive_row_check(sub,['A4','B1'])).to eql(false)
+      end
+
+      it 'checks for overlapping ships' do
+        cruiser = Ship.new("Cruiser", 3)
+        sub = Ship.new("Sub", 2)
+        expect(@board.place(cruiser,['A1','A2','A3']))
+        expect(@board.check_for_overlapping_ships(['A1','A2'])).to eql(false)
+        expect(@board.check_for_overlapping_ships(['B1','B2'])).to eql(true)
+      end
+
     end
 
     describe '#render' do
@@ -121,6 +172,5 @@ RSpec.describe Board do
         expect(@board.render(true)).to eql("  1 2 3 4\nA . S S S\nB . . . .\nC . . . .\nD . . . .\n")
       end
     end
-end
 
-#require 'pry'; binding.pry
+end
