@@ -2,12 +2,11 @@ require_relative 'cell'
 require_relative 'ship'
 
 class Board
-  attr_accessor :cells, :coordinates, :column_check_2, :column_check_3, :row_check, :row_check_2, :row_check_3, :random_sub_coordinates, :random_cruiser_coordinates
+  attr_accessor :cells, :coordinates, :column_check_2, :column_check_3, :row_check_2, :row_check_3, :random_sub_coordinates, :random_cruiser_coordinates
 
   def initialize
     @coordinates = []
     @cells = create_cells
-    @row_check = []
     @column_check_2 = [['A1','B1'],['B1', 'C1'],['C1','D1'], ['A2','B2'],['B2', 'C2'],['C2','D2'],['A3','B3'],['B3', 'C3'],['C3','D3'],['A4','B4'],['B4', 'C4'],['C4','D4']]
     @column_check_3 = [['A1','B1', 'C1'],['A2','B2', 'C2'],['A3','B3', 'C3'],['A4','B4', 'C4'],['B1','C1','D1'],['B2','C2','D2'],['B3','C3','D3'], ['B4','C4','D4']]
     @row_check_2 = [['A1','A2'],['A2', 'A3'],['A3','A4'], ['B1','B2'],['B2', 'B3'],['B3','B4'],['C1','C2'],['C2', 'C3'],['C3','C4'],['D1','D2'],['D2', 'D3'],['D3','D4']]
@@ -43,9 +42,9 @@ class Board
 
   def consecutive_row_check(ship_object,coordinate_array)
     if coordinate_array.length == 2
-      @row_check_2.any? {|columns| columns == coordinate_array}
+      @row_check_2.any? {|rows| rows == coordinate_array}
     else
-      @row_check_3.any? {|columns| columns == coordinate_array}
+      @row_check_3.any? {|rows| rows == coordinate_array}
     end
   end
 
@@ -62,11 +61,9 @@ class Board
   end
 
   def place(ship_object,coordinate_array)
-    if valid_placement?(ship_object,coordinate_array) == true
       coordinate_array.each do |coordinate|
         @cells[coordinate].place_ship(ship_object)
       end
-    end
   end
 
   #Hardcoded arrays to build random coordinates for ships
@@ -75,7 +72,7 @@ class Board
     end
 
     def random_coordinates_cruiser_computer
-      @random_cruiser_coordinates = [@row_check_3, @row_check_3].sample(1).flatten!(1)
+      @random_cruiser_coordinates = [@column_check_3, @row_check_3].sample(1).flatten!(1)
     end
 
   def render(show_ship_board = false)

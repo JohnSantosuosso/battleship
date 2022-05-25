@@ -15,12 +15,16 @@ class Messages
     puts "*** Goodbye ***"
   end
 
+  def invalid_input
+    "Invalid input, please try again."
+  end
+
   def computer_place_ships
     puts "Computer has placed its ships."
   end
 
   def user_place_sub
-    puts "Please place your submarine,length = 2"
+    puts "Please place your submarine,length = 2 (uppercase letters only)"
   end
 
   def user_place_sub_success
@@ -28,7 +32,7 @@ class Messages
   end
 
   def user_place_cruiser
-    puts "Please place your cruiser, length = 3"
+    puts "Please place your cruiser, length = 3 (uppercase letters only)"
   end
 
   def user_place_cruiser_success
@@ -41,14 +45,6 @@ class Messages
 
   def user_place_cruiser_failure
     puts "Uh oh, it looks like there were one or more errors with your cruiser placement.  Please try again"
-  end
-
-  def submarine_placement
-    puts "Enter the coordinates for your submarine"
-  end
-
-  def cruiser_placement
-    puts "Enter the coordinates for your cruiser"
   end
 
   def invalid_coordinates
@@ -66,7 +62,7 @@ class Messages
   end
 
   def player_shot
-  puts "Enter the coordinates for your shot"
+  puts "Enter the coordinates for your shot(uppercase letters only)"
   print ">>"
   end
 

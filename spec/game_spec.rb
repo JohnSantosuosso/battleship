@@ -90,8 +90,8 @@ RSpec.describe Game do
     it 'displays a computer board after computers ship is hit' do
       @game.computer_board.place(Ship.new('cruiser',3),['A1','A2','A3'])
       @game.player_fires('A1')
-      expect(@game.player_fire_result('A1')).to eq("Hit!!")
-      expect(@game.player_fire_ship_hit_result('A1')).to eq('The ship still floats..')
+      expect(@game.player_fire_result('A1')).to eq("\nYou shoot..\nHit!!")
+      expect(@game.player_fire_ship_hit_result('A1')).to eq("\nComputer's ship still floats..")
       expect(@game.display_computer_board_hidden). to eq("  1 2 3 4\nA H S S .\nB . . . .\nC . . . .\nD . . . .\n")
       expect(@game.display_computer_board_visible). to eq("  1 2 3 4\nA H . . .\nB . . . .\nC . . . .\nD . . . .\n")
     end
@@ -99,7 +99,7 @@ RSpec.describe Game do
     it 'displays a computer board after a miss' do
       @game.computer_board.place(Ship.new('cruiser',3),['A1','A2','A3'])
       @game.player_fires('B2')
-      expect(@game.player_fire_result('B2')).to eq("Miss!")
+      expect(@game.player_fire_result('B2')).to eq("\nYou shoot..\nMiss!")
       expect(@game.display_computer_board_hidden). to eq("  1 2 3 4\nA S S S .\nB . M . .\nC . . . .\nD . . . .\n")
       expect(@game.display_computer_board_visible). to eq("  1 2 3 4\nA . . . .\nB . M . .\nC . . . .\nD . . . .\n")
     end
@@ -107,7 +107,7 @@ RSpec.describe Game do
     it 'displays a players board after a players ship is hit' do
       @game.player_board.place(Ship.new('cruiser',3),['A1','A2','A3'])
       @game.computer_fires('A1')
-      expect(@game.computer_fire_result('A1')).to eq('Computer hits you!!')
+      expect(@game.computer_fire_result('A1')).to eq("\nComputer shoots...\nComputer hits you!!")
       expect(@game.display_player_board_hidden). to eq("  1 2 3 4\nA H S S .\nB . . . .\nC . . . .\nD . . . .\n")
       expect(@game.display_player_board_visible). to eq("  1 2 3 4\nA H . . .\nB . . . .\nC . . . .\nD . . . .\n")
     end
@@ -115,7 +115,7 @@ RSpec.describe Game do
     it 'displays a players board after a players ship is missed' do
       @game.player_board.place(Ship.new('cruiser',3),['A1','A2','A3'])
       @game.computer_fires('A4')
-      expect(@game.computer_fire_result('A4')).to eq("Computer misses you!")
+      expect(@game.computer_fire_result('A4')).to eq("\nComputer shoots...\nComputer misses you!!")
       expect(@game.display_player_board_hidden). to eq("  1 2 3 4\nA S S S M\nB . . . .\nC . . . .\nD . . . .\n")
       expect(@game.display_player_board_visible). to eq("  1 2 3 4\nA . . . M\nB . . . .\nC . . . .\nD . . . .\n")
     end
@@ -123,11 +123,11 @@ RSpec.describe Game do
     it 'displays a computer board after computers ship is sunk' do
       @game.computer_board.place(Ship.new('sub',2),['A1','A2'])
       @game.player_fires('A1')
-      expect(@game.player_fire_ship_hit_result('A1')).to eq('The ship still floats..')
-      expect(@game.player_fire_result('A1')).to eq('Hit!!')
+      expect(@game.player_fire_ship_hit_result('A1')).to eq("\nComputer's ship still floats..")
+      expect(@game.player_fire_result('A1')).to eq("\nYou shoot..\nHit!!")
       @game.player_fires('A2')
-      expect(@game.player_fire_result('A2')).to eq('Hit!!')
-      expect(@game.player_fire_ship_hit_result('A2')).to eq('The ship was sunk!!')
+      expect(@game.player_fire_result('A2')).to eq("\nYou shoot..\nHit!!")
+      expect(@game.player_fire_ship_hit_result('A2')).to eq( "\nComputer's ship was sunk!!")
       expect(@game.display_computer_board_hidden). to eq("  1 2 3 4\nA X X . .\nB . . . .\nC . . . .\nD . . . .\n")
       expect(@game.display_computer_board_visible). to eq("  1 2 3 4\nA X X . .\nB . . . .\nC . . . .\nD . . . .\n")
     end
@@ -135,11 +135,11 @@ RSpec.describe Game do
     it 'displays a players board after a players ship is sunk' do
       @game.player_board.place(Ship.new('sub',2),['A1','A2'])
       @game.computer_fires('A1')
-      expect(@game.computer_fire_ship_hit_result('A1')).to eq('Your ship still floats..')
-      expect(@game.computer_fire_result('A1')).to eq('Computer hits you!!')
+      expect(@game.computer_fire_ship_hit_result('A1')).to eq("\nYour ship still floats..")
+      expect(@game.computer_fire_result('A1')).to eq("\nComputer shoots...\nComputer hits you!!")
       @game.computer_fires('A2')
-      expect(@game.computer_fire_result('A2')).to eq('Computer hits you!!')
-      expect(@game.computer_fire_ship_hit_result('A2')).to eq('Computer sinks your ship!!')
+      expect(@game.computer_fire_result('A2')).to eq("\nComputer shoots...\nComputer hits you!!")
+      expect(@game.computer_fire_ship_hit_result('A2')).to eq("\nComputer sinks your ship!!")
       expect(@game.display_player_board_hidden). to eq("  1 2 3 4\nA X X . .\nB . . . .\nC . . . .\nD . . . .\n")
       expect(@game.display_player_board_visible). to eq("  1 2 3 4\nA X X . .\nB . . . .\nC . . . .\nD . . . .\n")
     end
@@ -152,19 +152,10 @@ RSpec.describe Game do
       @computer_sub = sub
       @game.player_board.place(@computer_sub,['A1','A2'])
       @game.computer_fires('A1')
-      expect(@game.computer_fire_ship_hit_result('A1')).to eq('Your ship still floats..')
-      expect(@game.computer_fire_result('A1')).to eq('Computer hits you!!')
+      expect(@game.computer_fire_ship_hit_result('A1')).to eq("\nYour ship still floats..")
+      expect(@game.computer_fire_result('A1')).to eq("\nComputer shoots...\nComputer hits you!!")
       expect(sub.health).to eq(1)
-      expect(@game.check_players_health).to eq('Your turn!')
-    end
-
-    xit 'ends the game if player health is 0' do
-      sub = Ship.new('sub', 2)
-      @game.player_board.place(sub,['A1','A2'])
-      @game.computer_fires('A1')
-
-      @game.computer_fires('A2')
-      expect(@game.check_game_result).to eq("I have emerged victorious... as always.")
+      expect(@game.check_players_health).to eq( "Your turn!\n")
     end
 
     it 'displays a header for the player board' do

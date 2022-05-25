@@ -42,29 +42,25 @@ class Game
 
 #Setup computer ships
   def generate_computer_sub_position
-      @computer_sub_position = @computer_board.random_coordinates_sub_computer.sample(1).flatten
+      @computer_sub_position = @computer_board.random_coordinates_sub_computer.sample(1).flatten!
   end
 
   def generate_computer_cruiser_position
-    @computer_cruiser_position = @computer_board.random_coordinates_cruiser_computer.sample(1).flatten
+    @computer_cruiser_position = @computer_board.random_coordinates_cruiser_computer.sample(1).flatten!
   end
 
   def validate_computer_sub_placement
-    if @computer_board.valid_placement?(@computer_sub, @computer_sub_position) == true
-      generate_computer_cruiser_position
+    if @computer_board.valid_placement?(@computer_sub, @computer_sub_position)
+      @computer_sub_position
     else
-      @computer_sub_position =[]
-      @computer_board.row_check = []
       generate_computer_sub_position
     end
   end
 
   def validate_computer_cruiser_placement
-    if @computer_board.valid_placement?(@computer_cruiser, @computer_cruiser_position) == true
-      puts 'The computer places its ships..'
+    if @computer_board.valid_placement?(@computer_cruiser, @computer_cruiser_position)
+      @computer_cruiser_position
     else
-      @computer_sub_position =[]
-      @computer_board.row_check = []
       generate_computer_cruiser_position
     end
   end
@@ -80,9 +76,9 @@ class Game
   def place_all_computer_ships
     generate_computer_sub_position
     validate_computer_sub_placement
+    place_computer_sub
     generate_computer_cruiser_position
     validate_computer_cruiser_placement
-    place_computer_sub
     place_computer_cruiser
     messages.computer_place_ships
     puts messages.display_computer_header
@@ -93,7 +89,7 @@ class Game
   def receive_player_sub_position_1
     messages.user_place_sub
     sub_position_1 = gets.chomp
-    if @player_board.valid_coordinate?(sub_position_1) == true
+    if @player_board.valid_coordinate?(sub_position_1)
       @player_sub_position << sub_position_1
       receive_player_sub_position_2
     else
@@ -103,47 +99,50 @@ class Game
   end
 
   def receive_player_sub_position_2
-    #message for player to enter 2nd position here
     sub_input_position_2 = gets.chomp
-    if @player_board.valid_coordinate?(sub_input_position_2) == true
+    if @player_board.valid_coordinate?(sub_input_position_2)
        @player_sub_position << sub_input_position_2
-       validate_sub_placement
     else
-      #add new messages for invalid 2nd coordinate and remove this one
       @messages.invalid_coordinates
       receive_player_sub_position_2
     end
   end
 
   def validate_sub_placement
-    if @player_board.valid_placement?(@player_sub, @player_sub_position) == true
-      place_player_sub
-      messages.user_place_sub_success
-      puts messages.display_player_header
-      puts display_player_board_hidden
-      receive_player_cruiser_position_1
+    if @player_board.valid_placement?(@player_sub, @player_sub_position)
+      @player_sub_position
     else
       messages.user_place_sub_failure
       @player_sub_position = []
-      @player_board.row_check = []
       receive_player_sub_position_1
     end
   end
 
   def place_player_sub
     @player_board.place(@player_sub, @player_sub_position)
-    @player_board.row_check = []
   end
 
   def place_all_player_ships
     receive_player_sub_position_1
+    validate_sub_placement
+    place_player_sub
+    messages.user_place_sub_success
+    puts messages.display_player_header
+    puts display_player_board_hidden
+    receive_player_cruiser_position_1
+    validate_cruiser_placement
+    place_player_cruiser
+    puts messages.display_player_header
+    puts display_player_board_hidden
+    puts "\n"
+    puts "Let the game begin.."
   end
 
 #Setup player_cruiser ----------------------------------------------------------
 def receive_player_cruiser_position_1
   messages.user_place_cruiser
   cruiser_position_1 = gets.chomp
-  if @player_board.valid_coordinate?(cruiser_position_1) == true
+  if @player_board.valid_coordinate?(cruiser_position_1)
     @player_cruiser_position << cruiser_position_1
     receive_player_cruiser_position_2
   else
@@ -153,41 +152,32 @@ def receive_player_cruiser_position_1
 end
 
 def receive_player_cruiser_position_2
-  #message for player to enter input here
   cruiser_position_2 = gets.chomp
-  if @player_board.valid_coordinate?(cruiser_position_2) == true
+  if @player_board.valid_coordinate?(cruiser_position_2)
     @player_cruiser_position << cruiser_position_2
     receive_player_cruiser_position_3
   else
-    #add new messages for invalid 2nd coordinate and remove this one
     @messages.invalid_coordinates
     receive_player_cruiser_position_2
   end
 end
 
 def receive_player_cruiser_position_3
-  #message for player to enter input here
   cruiser_position_3 = gets.chomp
   if @player_board.valid_coordinate?(cruiser_position_3)
     @player_cruiser_position << cruiser_position_3
-    validate_cruiser_placement
   else
-    #add new messages for invalid 2nd coordinate and remove this one
     @messages.invalid_coordinates
     receive_player_cruiser_position_2
   end
 end
 
 def validate_cruiser_placement
-  if @player_board.valid_placement?(@player_cruiser, @player_cruiser_position) == true
-    place_player_cruiser
-    messages.user_place_cruiser_success
-    puts messages.display_player_header
-    puts display_player_board_hidden
+  if @player_board.valid_placement?(@player_cruiser, @player_cruiser_position)
+    @player_cruiser_position
   else
     messages.user_place_cruiser_failure
     @player_cruiser_position = []
-    @player_board.row_check = []
     receive_player_cruiser_position_1
   end
 end
@@ -215,17 +205,17 @@ end
 def player_fires(player_shot)
   @computer_board.cells[player_shot].fire_upon
   puts player_fire_result(player_shot)
-  if player_fire_result(player_shot) == 'Hit!!'
+  if player_fire_result(player_shot) == "\nYou shoot..\nHit!!"
     puts player_fire_ship_hit_result(player_shot)
   end
 end
 
 def player_fire_result(player_shot)
-  @computer_board.cells[player_shot].ship.nil? ? 'Miss!' : 'Hit!!'
+  @computer_board.cells[player_shot].ship.nil? ? "\nYou shoot..\nMiss!" : "\nYou shoot..\nHit!!"
 end
 
 def player_fire_ship_hit_result(player_shot)
-  @computer_board.cells[player_shot].ship.health == 0 ? 'The ship was sunk!!' : 'The ship still floats..'
+  @computer_board.cells[player_shot].ship.health == 0 ? "\nComputer's ship was sunk!!" : "\nComputer's ship still floats.."
 end
 
 #Computer Attack Sequence
@@ -246,26 +236,26 @@ end
 def computer_fires(computer_shot)
   @player_board.cells[computer_shot].fire_upon
   puts computer_fire_result(computer_shot)
-  if computer_fire_result(computer_shot) == 'Computer hits you!!'
+  if computer_fire_result(computer_shot) == "\nComputer shoots...\nComputer hits you!!"
     puts computer_fire_ship_hit_result(computer_shot)
   end
 end
 
 def computer_fire_result(computer_shot)
-  @player_board.cells[computer_shot].ship.nil? ? 'Computer misses you!' : 'Computer hits you!!'
+  @player_board.cells[computer_shot].ship.nil? ? "\nComputer shoots...\nComputer misses you!!" : "\nComputer shoots...\nComputer hits you!!"
 end
 
 def computer_fire_ship_hit_result(computer_shot)
-  @player_board.cells[computer_shot].ship.health == 0 ? 'Computer sinks your ship!!' : 'Your ship still floats..'
+  @player_board.cells[computer_shot].ship.health == 0 ? "\nComputer sinks your ship!!" : "\nYour ship still floats.."
 end
 
 #Score Check Methods--------------------------------------------------
 def check_players_health
-  @player_sub.health == 0 && @player_cruiser.health == 0 ? true : 'Your turn!'
+  @player_sub.health == 0 && @player_cruiser.health == 0 ? true : "Your turn!\n"
 end
 
 def check_computers_health
-  @computer_sub.health == 0 && @computer_cruiser.health == 0 ? true : 'The computer takes a turn..'
+  @computer_sub.health == 0 && @computer_cruiser.health == 0 ? true : "The computer takes a turn..\n"
 end
 
 def check_game_result
@@ -308,7 +298,10 @@ def start_game
       messages.player_quits
       exit
     else
-      puts "Invalid option, please try again."
+      puts messages.invalid_input
+      start_game
     end
   end
 end
+
+#require 'pry';binding.pry
