@@ -54,7 +54,7 @@ class Game
       @computer_sub_position
     else
       generate_computer_sub_position
-      validate_sub_placement
+      validate_computer_sub_placement
     end
   end
 
