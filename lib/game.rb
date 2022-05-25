@@ -54,6 +54,7 @@ class Game
       @computer_sub_position
     else
       generate_computer_sub_position
+      validate_sub_placement
     end
   end
 
@@ -62,6 +63,7 @@ class Game
       @computer_cruiser_position
     else
       generate_computer_cruiser_position
+      validate_computer_cruiser_placement
     end
   end
 
@@ -115,6 +117,7 @@ class Game
       messages.user_place_sub_failure
       @player_sub_position = []
       receive_player_sub_position_1
+      validate_sub_placement
     end
   end
 
@@ -172,6 +175,7 @@ def receive_player_cruiser_position_3
   end
 end
 
+#Error occurs here allows overwrite of original ship
 def validate_cruiser_placement
   if @player_board.valid_placement?(@player_cruiser, @player_cruiser_position)
     @player_cruiser_position
@@ -179,6 +183,7 @@ def validate_cruiser_placement
     messages.user_place_cruiser_failure
     @player_cruiser_position = []
     receive_player_cruiser_position_1
+    validate_cruiser_placement
   end
 end
 
