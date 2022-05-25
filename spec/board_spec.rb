@@ -171,6 +171,34 @@ RSpec.describe Board do
         @board.place(cruiser, ["A2", "A3", "A4"])
         expect(@board.render(true)).to eql("  1 2 3 4\nA . S S S\nB . . . .\nC . . . .\nD . . . .\n")
       end
+
+      it 'renders a board that shows a ship that has been hit' do
+        cruiser = Ship.new("Cruiser", 3)
+        @board.place(cruiser, ["A1", "A2", "A3"])
+        cell_1 = @board.cells["A1"]
+        cell_1.fire_upon
+        expect(@board.render).to eql("  1 2 3 4\nA H . . .\nB . . . .\nC . . . .\nD . . . .\n")
+      end
+
+      it 'renders a board that shows when a cell missed' do
+        cruiser = Ship.new("Cruiser", 3)
+        @board.place(cruiser, ["A1", "A2", "A3"])
+        cell_1 = @board.cells["A4"]
+        cell_1.fire_upon
+        expect(@board.render).to eql("  1 2 3 4\nA . . . M\nB . . . .\nC . . . .\nD . . . .\n")
+      end
+
+      it 'renders a board that shows when a ship is sunk' do
+        cruiser = Ship.new("Cruiser", 3)
+        @board.place(cruiser, ["A1", "A2", "A3"])
+        cell_1 = @board.cells["A1"]
+        cell_2 = @board.cells["A2"]
+        cell_3 = @board.cells["A3"]
+        cell_1.fire_upon
+        cell_2.fire_upon
+        cell_3.fire_upon
+        expect(@board.render).to eql("  1 2 3 4\nA X X X .\nB . . . .\nC . . . .\nD . . . .\n")
+      end
     end
 
 end
